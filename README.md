@@ -5,11 +5,16 @@ In CS163 course, APCS students will be studying about trees and graphs. This rep
 - [ ] Hash table
 - [ ] Binary Search Tree
 - [ ] AVL Tree
+  - [x] Draw
+  - [x] Insert
+  - [ ] Delete
+  - [ ] Update
+  - [ ] Search
 - [ ] 2-3 Tree
 - [ ] 2-3-4 Tree
 - [ ] Red-Black Tree
 
 ## Features
-- [ ] Console print
+- [x] Console print
 - [ ] Benchmark
 
