@@ -4,7 +4,7 @@
 
 using namespace std;
 
-class AVL
+class BST
 {
 private:
 	const static int INDENT = 10;
@@ -17,11 +17,7 @@ private:
 		int height;
 
 		Node(int value) : value(value), left(nullptr), right(nullptr), height(1) {}
-		~Node()
-		{
-			delete left;
-			delete right;
-		}
+		~Node() {}
 	};
 
 	Node *root;
@@ -32,32 +28,6 @@ private:
 		if (root == nullptr)
 			return 0;
 		return root->height;
-	}
-
-	Node *rotateLeft(Node *root)
-	{
-		Node *newRoot = root->right;
-
-		root->right = newRoot->left;
-		newRoot->left = root;
-
-		root->height = 1 + max(getHeight(root->left), getHeight(root->right));
-		newRoot->height = 1 + max(getHeight(newRoot->left), getHeight(newRoot->right));
-
-		return newRoot;
-	}
-
-	Node *rotateRight(Node *root)
-	{
-		Node *newRoot = root->left;
-
-		root->left = newRoot->right;
-		newRoot->right = root;
-
-		root->height = 1 + max(getHeight(root->left), getHeight(root->right));
-		newRoot->height = 1 + max(getHeight(newRoot->left), getHeight(newRoot->right));
-
-		return newRoot;
 	}
 
 	Node *insert(Node *root, int value)
@@ -75,32 +45,72 @@ private:
 		// Set height
 		root->height = 1 + max(getHeight(root->left), getHeight(root->right));
 
-		// Rotate
-		int deltaHeight = getHeight(root->left) - getHeight(root->right);
-
-		// Left Left
-		if (deltaHeight > 1 && value < root->left->value)
-			return rotateRight(root);
-
-		// Right Right
-		if (deltaHeight < -1 && value > root->right->value)
-			return rotateLeft(root);
-
-		// Left Right
-		if (deltaHeight > 1 && value > root->left->value)
-		{
-			root->left = rotateLeft(root->left);
-			return rotateRight(root);
-		}
-
-		// Right Left
-		if (deltaHeight < -1 && value < root->right->value)
-		{
-			root->right = rotateRight(root->right);
-			return rotateLeft(root);
-		}
-
 		return root;
+	}
+
+	Node *remove(Node *root, int value)
+	{
+		cerr << "Processing: " << (root ? root->value : -1) << '\n';
+		if (root == nullptr)
+			return root;
+		if (value < root->value)
+		{
+			root->left = remove(root->left, value);
+			return root;
+		}
+		else if (value > root->value)
+		{
+			root->right = remove(root->right, value);
+			return root;
+		}
+		else
+		{
+			cerr << "yay\n";
+			if (root->left == nullptr)
+			{
+				Node *tmp = root->right;
+				delete root;
+				return tmp;
+			}
+			else if (root->right == nullptr)
+			{
+				Node *tmp = root->left;
+				delete root;
+				return tmp;
+			}
+			else
+			{
+				Node *succPar = root;
+				Node *succ = root->right;
+				while (succ->left != nullptr)
+				{
+					succPar = succ;
+					succ = succ->left;
+				}
+
+				if (succPar != root)
+					succPar->left = succ->right;
+				else
+					succPar->right = succ->right;
+
+				root->value = succ->value;
+
+				delete succ;
+
+				return root;
+			}
+		}
+	}
+
+	bool found(Node *root, int value)
+	{
+		if (root == nullptr)
+			return false;
+		if (root->value == value)
+			return true;
+		if (root->value < value)
+			return found(root->right, value);
+		return found(root->left, value);
 	}
 
 	void drawNode(vector<string> &output, vector<string> &linkAbove, Node *node, int level, int p, char linkChar)
@@ -153,13 +163,20 @@ private:
 			drawNode(output, linkAbove, node->right, level + 1, output[level].size(), 'R');
 	}
 
-	//------------------
+	void recursiveDelete(Node *root)
+	{
+		if (root == nullptr)
+			return;
+		recursiveDelete(root->left);
+		recursiveDelete(root->right);
+		delete root;
+	}
 
 public:
-	AVL() : root(nullptr) {}
-	~AVL()
+	BST() : root(nullptr) {}
+	~BST()
 	{
-		delete root;
+		recursiveDelete(root);
 	}
 
 	void insert(int value)
@@ -167,8 +184,17 @@ public:
 		root = insert(root, value);
 	}
 
-	void erase(int value)
+	void remove(int value)
 	{
+		root = remove(root, value);
+	}
+
+	void find(int value)
+	{
+		if (found(root, value))
+			cout << "Found " << value << '\n';
+		else
+			cout << value << " is not found\n";
 	}
 
 	void print()
@@ -226,15 +252,27 @@ int main()
 	int numQueries;
 	cin >> numQueries;
 
-	AVL mAVL;
+	BST mBST;
 	while (numQueries--)
 	{
 		int value;
 		cin >> value;
-		mAVL.insert(value);
+		mBST.insert(value);
 		cout << "Insert new value: " << value << '\n';
 	}
-	mAVL.print();
+	mBST.print();
 
+	cin >> numQueries;
+	while (numQueries--)
+	{
+		int value;
+		cin >> value;
+		cout << "Delete value: " << value << '\n';
+		mBST.remove(value);
+		mBST.print();
+	}
+
+	mBST.find(50);
+	mBST.find(22);
 	return 0;
 }

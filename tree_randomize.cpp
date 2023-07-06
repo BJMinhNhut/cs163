@@ -12,5 +12,9 @@ int main(int argc, char **argv)
 	for (int i = 0; i < n; ++i)
 		a[i] = rnd.next(1, 100);
 	println(a);
+	int m = rnd.next(1, 10);
+	cout << m << '\n';
+	for (int i = 0; i < n; ++i)
+		cout << rnd.any(a) << ' ';
 	return 0;
 }
