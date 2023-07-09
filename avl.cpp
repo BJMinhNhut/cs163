@@ -153,7 +153,16 @@ private:
 			drawNode(output, linkAbove, node->right, level + 1, output[level].size(), 'R');
 	}
 
-	//------------------
+	bool found(Node *root, int value)
+	{
+		if (root == nullptr)
+			return false;
+		if (root->value == value)
+			return true;
+		if (root->value < value)
+			return found(root->right, value);
+		return found(root->left, value);
+	}
 
 public:
 	AVL() : root(nullptr) {}
@@ -167,8 +176,12 @@ public:
 		root = insert(root, value);
 	}
 
-	void erase(int value)
+	void find(int value)
 	{
+		if (found(root, value))
+			cout << "Found " << value << '\n';
+		else
+			cout << value << " is not found\n";
 	}
 
 	void print()
@@ -236,5 +249,7 @@ int main()
 	}
 	mAVL.print();
 
+	mAVL.find(71);
+	mAVL.find(72);
 	return 0;
 }

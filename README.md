@@ -11,7 +11,7 @@ In CS163 course, APCS students will be studying about trees and graphs. This rep
 - [x] AVL Tree
   - [x] Draw
   - [x] Insert
-  - [ ] Search
+  - [x] Search
 - [ ] B-Tree
   - [ ] Draw
   - [ ] Insert
