@@ -3,12 +3,14 @@ In CS163 course, APCS students will be studying about trees and graphs. This rep
 
 ## Data structures
 - [ ] Hash table
-- [ ] Binary Search Tree
-- [ ] AVL Tree
+- [x] Binary Search Tree
   - [x] Draw
   - [x] Insert
-  - [ ] Delete
-  - [ ] Update
+  - [x] Delete
+  - [x] Search
+- [x] AVL Tree
+  - [x] Draw
+  - [x] Insert
   - [ ] Search
 - [ ] 2-3 Tree
 - [ ] 2-3-4 Tree
