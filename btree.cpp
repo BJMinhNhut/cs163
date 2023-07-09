@@ -144,8 +144,15 @@ private:
 		return cur;
 	}
 
-	bool found(Node *root, int value)
+	bool found(Node *cur, int value)
 	{
+		if (cur == nullptr)
+			return false;
+		for (int v : cur->keys)
+			if (v == value)
+				return true;
+		int pos = upper_bound(cur->keys.begin(), cur->keys.end(), value) - cur->keys.begin();
+		return found(cur->children[pos], value);
 	}
 
 	void recursiveDelete(Node *cur)
@@ -221,7 +228,7 @@ int main()
 	int numQueries;
 	cin >> numQueries;
 
-	BTree mTree(4);
+	BTree mTree(3);
 	int cnt = 0;
 	while (numQueries--)
 	{
@@ -232,7 +239,8 @@ int main()
 		mTree.print();
 	}
 
-	// mTree.find(50);
-	// mTree.find(22);
+	mTree.find(70);
+	mTree.find(96);
+	mTree.find(22);
 	return 0;
 }
