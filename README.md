@@ -13,8 +13,8 @@ In CS163 course, APCS students will be studying about trees and graphs. This rep
   - [x] Insert
   - [x] Search
 - [ ] B-Tree
-  - [ ] Draw
-  - [ ] Insert
+  - [x] Draw
+  - [x] Insert
   - [ ] Search
 - [ ] Red-Black Tree
 
