@@ -3,7 +3,6 @@
 #include <math.h>
 #include <queue>
 #include <algorithm>
-#include <cassert>
 #include <tuple>
 
 using namespace std;
@@ -45,21 +44,6 @@ private:
 
 	SplitedNode split(Node *cur)
 	{
-		assert(cur->keys.size() == MaxDegree);
-		// cout << "Spliting______\n";
-		// for (int v : cur->keys)
-		// 	cout << v << "/";
-		// cout << '\n';
-		// for (auto child : cur->children)
-		// {
-		// 	if (!child)
-		// 		break;
-		// 	for (int v : child->keys)
-		// 		cout << v << "/";
-		// 	cout << ' ';
-		// }
-		// cout << '\n';
-
 		int mid = MaxDegree / 2;
 		Node *left = new Node(MaxDegree);
 		Node *right = new Node(MaxDegree);
@@ -86,10 +70,6 @@ private:
 
 	Node *insert(Node *cur, int value)
 	{
-		// if (cur)
-		// 	for (int v : cur->keys)
-		// 		cout << v << "/";
-		// cout << ' ' << value << '\n';
 		if (cur == nullptr)
 		{
 			cur = new Node(MaxDegree, value);
@@ -105,34 +85,12 @@ private:
 			// fix overflow node
 			if (cur->children[pos]->keys.size() == MaxDegree)
 			{
-				// cout << "Old children:\n";
-				// for (auto child : cur->children)
-				// {
-				// 	if (!child)
-				// 		cout << "0/";
-				// 	else
-				// 		for (int v : child->keys)
-				// 			cout << v << "/";
-				// 	cout << ' ';
-				// }
-				// cout << '\n';
 				SplitedNode splited = split(cur->children[pos]);
 				int pos = upper_bound(cur->keys.begin(), cur->keys.end(), splited.value) - cur->keys.begin();
 				cur->keys.insert(cur->keys.begin() + pos, splited.value);
 				cur->children[pos] = splited.left;
 				cur->children.insert(cur->children.begin() + pos + 1, splited.right);
 				cur->children.pop_back();
-				// cout << "New children:\n";
-				// for (auto child : cur->children)
-				// {
-				// 	if (!child)
-				// 		cout << "null/";
-				// 	else
-				// 		for (int v : child->keys)
-				// 			cout << v << "/";
-				// 	cout << ' ';
-				// }
-				// cout << '\n';
 			}
 		}
 		else
