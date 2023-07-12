@@ -65,7 +65,6 @@ private:
 		}
 		else
 		{
-			cerr << "yay\n";
 			if (root->left == nullptr)
 			{
 				Node *tmp = root->right;
