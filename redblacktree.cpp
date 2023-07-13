@@ -217,6 +217,6 @@ int main() {
 	}
 
 	mTree.find(50);
-	mTree.find(22);
+	mTree.find(20);
 	return 0;
 }
