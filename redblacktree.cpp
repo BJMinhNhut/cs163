@@ -177,6 +177,14 @@ class RedBlackTree {
 		root->isRed = false;  // Case 0
 	}
 
+	void inorderTraversal(Node* cur) {
+		if (cur == nullptr)
+			return;
+		inorderTraversal(cur->left);
+		cout << cur->value << ' ';
+		inorderTraversal(cur->right);
+	}
+
    public:
 	RedBlackTree()
 	    : root(nullptr), RightRight(false), LeftLeft(false), LeftRight(false), RightLeft(false) {}
@@ -198,6 +206,11 @@ class RedBlackTree {
 	}
 
 	void print() { printHelper(root, "", true); }
+
+	void printInOrder() {
+		inorderTraversal(root);
+		cout << '\n';
+	}
 };
 
 int main() {
@@ -213,6 +226,7 @@ int main() {
 		cin >> value;
 		mTree.insert(value);
 		cout << "Insert new value: " << value << '\n';
+		mTree.printInOrder();
 		mTree.print();
 	}
 
