@@ -1,116 +1,62 @@
+#include <math.h>
 #include <iostream>
 #include <vector>
-#include <math.h>
 
 using namespace std;
 
-class RedBlackTree
-{
-private:
+class RedBlackTree {
+   private:
 	const static int INDENT = 10;
 
-	struct Node
-	{
+	struct Node {
 		int value;
-		Node *left;
-		Node *right;
-		int height;
+		Node* left;
+		Node* right;
+		Node* parent;
+		bool isRed;
 
-		Node(int value) : value(value), left(nullptr), right(nullptr), height(1) {}
+		Node(int value)
+		    : value(value), left(nullptr), right(nullptr), parent(nullptr), isRed(true) {}
 		~Node() {}
 	};
 
-	Node *root;
+	Node* root;
+	bool LeftLeft, RightRight, LeftRight, RightLeft;
 
-private:
-	int getHeight(Node *root)
-	{
-		if (root == nullptr)
-			return 0;
-		return root->height;
+   private:
+	Node* rotateRight(Node* cur) {
+		Node* newRoot = cur->left;
+		cur->left = newRoot->right;
+		newRoot->right = cur;
+
+		cur->parent = newRoot;
+		newRoot->right->parent = cur;
+
+		return newRoot;
 	}
 
-	Node *insert(Node *root, int value)
-	{
-		// Insert
-		if (root == nullptr)
-			return new Node(value);
-		if (value == root->value)
-			return root;
-		if (value > root->value)
-			root->right = insert(root->right, value);
-		if (value < root->value)
-			root->left = insert(root->left, value);
+	Node* rotateLeft(Node* cur) {
+		Node* newRoot = cur->right;
+		cur->right = newRoot->left;
+		newRoot->left = cur;
 
-		// Set height
-		root->height = 1 + max(getHeight(root->left), getHeight(root->right));
+		cur->parent = newRoot;
+		newRoot->left->parent = cur;
 
-		return root;
+		return newRoot;
 	}
 
-	bool found(Node *root, int value)
-	{
-		if (root == nullptr)
+	bool found(Node* cur, int value) {
+		if (cur == nullptr)
 			return false;
-		if (root->value == value)
+		if (cur->value == value)
 			return true;
-		if (root->value < value)
-			return found(root->right, value);
-		return found(root->left, value);
+		if (cur->value < value)
+			return found(cur->right, value);
+		return found(cur->left, value);
 	}
 
-	void drawNode(vector<string> &output, vector<string> &linkAbove, Node *node, int level, int p, char linkChar)
-	{
-		if (!node)
-			return;
-
-		int h = output.size();
-		string SP = " ";
-
-		if (p < 0) // Shunt everything non-blank across
-		{
-			string extra(-p, ' ');
-			for (string &s : output)
-				if (!s.empty())
-					s = extra + s;
-			for (string &s : linkAbove)
-				if (!s.empty())
-					s = extra + s;
-		}
-		if (level < h - 1)
-			p = max(p, (int)output[level + 1].size());
-		if (level > 0)
-			p = max(p, (int)output[level - 1].size());
-		p = max(p, (int)output[level].size());
-
-		// Fill in to left
-		if (node->left)
-		{
-			string leftData = SP + to_string(node->left->value) + SP;
-			drawNode(output, linkAbove, node->left, level + 1, p - leftData.size(), 'L');
-			p = max(p, (int)output[level + 1].size());
-		}
-
-		// Enter this data
-		int space = p - output[level].size();
-		if (space > 0)
-			output[level] += string(space, ' ');
-		string nodeData = SP + to_string(node->value) + SP;
-		output[level] += nodeData;
-
-		// Add vertical link above
-		space = p + SP.size() - linkAbove[level].size();
-		if (space > 0)
-			linkAbove[level] += string(space, ' ');
-		linkAbove[level] += linkChar;
-
-		// Fill in to right
-		if (node->right)
-			drawNode(output, linkAbove, node->right, level + 1, output[level].size(), 'R');
-	}
-
-	void recursiveDelete(Node *root)
-	{
+	void recursiveDelete(Node* root) {
 		if (root == nullptr)
 			return;
 		recursiveDelete(root->left);
@@ -118,75 +64,77 @@ private:
 		delete root;
 	}
 
-public:
-	RedBlackTree() : root(nullptr) {}
-	~RedBlackTree()
-	{
-		recursiveDelete(root);
+	void printHelper(Node* root, string indent, bool last) {
+		// print the tree structure on the screen
+		if (root != nullptr) {
+			cout << indent;
+			if (last) {
+				cout << "R----";
+				indent += "     ";
+			} else {
+				cout << "L----";
+				indent += "|    ";
+			}
+
+			string sColor = root->isRed ? "RED" : "BLACK";
+			cout << root->value << "(" << sColor << ")" << endl;
+			printHelper(root->left, indent, false);
+			printHelper(root->right, indent, true);
+		}
+		// cout<<root->left->data<<endl;
 	}
 
-	void insert(int value)
-	{
-		root = insert(root, value);
+	Node* BSTInsert(int value) {
+		Node* insertNode = new Node(value);
+
+		Node *par = nullptr, *cur = root;
+		while (cur != nullptr) {
+			par = cur;
+			if (value < par->value)
+				cur = par->left;
+			else
+				cur = par->right;
+		}
+
+		if (par == nullptr) {
+			root = insertNode;
+		} else {
+			insertNode->parent = par;
+			if (value < par->value)
+				par->left = insertNode;
+			else
+				par->right = insertNode;
+		}
+
+		return insertNode;
 	}
 
-	void find(int value)
-	{
+	void fixInsert(Node* cur) {}
+
+   public:
+	RedBlackTree()
+	    : root(nullptr), RightRight(false), LeftLeft(false), LeftRight(false), RightLeft(false) {}
+
+	~RedBlackTree() { recursiveDelete(root); }
+
+	void insert(int value) {
+		// BST Insert
+		Node* insertPos = BSTInsert(value);
+		// Fix
+		fixInsert(insertPos);
+	}
+
+	void find(int value) {
 		if (found(root, value))
 			cout << "Found " << value << '\n';
 		else
 			cout << value << " is not found\n";
 	}
 
-	void print()
-	{
-		cout << "\n";
-		int h = getHeight(root);
-		vector<string> output(h), linkAbove(h);
-		drawNode(output, linkAbove, root, 0, 5, ' ');
-
-		// Create link lines
-		for (int i = 1; i < h; i++)
-		{
-			for (int j = 0; j < linkAbove[i].size(); j++)
-			{
-				if (linkAbove[i][j] != ' ')
-				{
-					int size = output[i - 1].size();
-					if (size < j + 1)
-						output[i - 1] += string(j + 1 - size, ' ');
-					int jj = j;
-					if (linkAbove[i][j] == 'L')
-					{
-						while (output[i - 1][jj] == ' ')
-							jj++;
-						for (int k = j + 1; k < jj - 1; k++)
-							output[i - 1][k] = '_';
-					}
-					else if (linkAbove[i][j] == 'R')
-					{
-						while (output[i - 1][jj] == ' ')
-							jj--;
-						for (int k = j - 1; k > jj + 1; k--)
-							output[i - 1][k] = '_';
-					}
-					linkAbove[i][j] = '|';
-				}
-			}
-		}
-
-		// Output
-		for (int i = 0; i < h; i++)
-		{
-			if (i)
-				cout << linkAbove[i] << '\n';
-			cout << output[i] << '\n';
-		}
-	}
+	void print() { printHelper(root, "", true); }
 };
 
-int main()
-{
+int main() {
 	freopen("tree_input.txt", "r", stdin);
 	freopen("output.txt", "w", stdout);
 
@@ -194,8 +142,7 @@ int main()
 	cin >> numQueries;
 
 	RedBlackTree mTree;
-	while (numQueries--)
-	{
+	while (numQueries--) {
 		int value;
 		cin >> value;
 		mTree.insert(value);

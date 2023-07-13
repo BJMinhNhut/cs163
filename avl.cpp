@@ -37,7 +37,6 @@ private:
 	Node *rotateLeft(Node *root)
 	{
 		Node *newRoot = root->right;
-
 		root->right = newRoot->left;
 		newRoot->left = root;
 
@@ -50,7 +49,6 @@ private:
 	Node *rotateRight(Node *root)
 	{
 		Node *newRoot = root->left;
-
 		root->left = newRoot->right;
 		newRoot->right = root;
 
