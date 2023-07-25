@@ -16,9 +16,14 @@ int main() {
 
 	heap = new int[50];
 
-	vector<int> insertValues = {6, 2, 7, 3, 4, 5, 1};
+	vector<int> insertValues = {3, 2, 4, 5, 6, 1, 7};
 	for (int v : insertValues) {
 		insertHeap(heap, n, v);
+		printHeap(heap, n);
+	}
+
+	while (n > 0) {
+		cout << "Top Heap: " << getTopHeap(heap, n) << '\n';
 		printHeap(heap, n);
 	}
 
@@ -29,7 +34,7 @@ int main() {
 void printHeap(int* heap, int n) {
 	for (int i = 0; i < n; ++i) {
 		cout << heap[i] << ' ';
-		if ((i + 1) & i == 0)
+		if (((i + 2) & (i + 1)) == 0 || i == n - 1)
 			cout << '\n';
 	}
 	cout << '\n';
@@ -42,7 +47,9 @@ void upHeap(int* heap, int index) {
 			int temp = heap[index];
 			heap[index] = heap[parent];
 			heap[parent] = temp;
-		}
+			index = parent;
+		} else
+			break;
 	}
 }
 
@@ -60,7 +67,7 @@ void downHeap(int* heap, int n, int index) {
 
 		if (leftChild < n && heap[largest] < heap[leftChild])
 			largest = leftChild;
-		if (rightChild < n && heap[largest] < heap[leftChild])
+		if (rightChild < n && heap[largest] < heap[rightChild])
 			largest = rightChild;
 		if (largest != index) {
 			int temp = heap[index];
