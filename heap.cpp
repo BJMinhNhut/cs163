@@ -1,17 +1,38 @@
 #include <iostream>
+#include <vector>
 using namespace std;
 
 void insertHeap(int* heap, int& n, int x);
 int getTopHeap(int* heap, int& n);
 void upHeap(int* heap, int index);
 void downHeap(int* heap, int n, int index);
+void printHeap(int* heap, int n);
 
 int main() {
+	freopen("output.txt", "w", stdout);
+
 	int* heap;
-	int n;
+	int n = 0;
+
+	heap = new int[50];
+
+	vector<int> insertValues = {6, 2, 7, 3, 4, 5, 1};
+	for (int v : insertValues) {
+		insertHeap(heap, n, v);
+		printHeap(heap, n);
+	}
 
 	delete[] heap;
 	return 0;
+}
+
+void printHeap(int* heap, int n) {
+	for (int i = 0; i < n; ++i) {
+		cout << heap[i] << ' ';
+		if ((i + 1) & i == 0)
+			cout << '\n';
+	}
+	cout << '\n';
 }
 
 void upHeap(int* heap, int index) {
