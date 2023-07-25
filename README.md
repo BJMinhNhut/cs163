@@ -20,6 +20,11 @@ In CS163 course, APCS students will be studying about trees and graphs. This rep
   - [x] Draw
   - [x] Insert
   - [x] Search
+- [ ] Heap
+  - [ ] Draw
+  - [ ] Insert
+  - [ ] Delete
+  - [ ] Pop
 
 ## Features
 - [x] Console print
